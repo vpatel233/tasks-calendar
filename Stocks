@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Tasks and Calendar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .tasks, .calendar {
+            margin-top: 20px;
+        }
+
+        .task-input {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .task-input input {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        .task-input button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #28a745;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .task-input button:hover {
+            background-color: #218838;
+        }
+
+        .task-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .task-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .task-list li.completed {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .calendar table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .calendar th, .calendar td {
+            border: 1px solid #ddd;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .calendar th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .calendar td:hover {
+            background-color: #f1f1f1;
+            cursor: pointer;
+        }
+
+        .add-event {
+            margin-top: 10px;
+            display: none;
+        }
+
+        .add-event input {
+            width: calc(100% - 30px);
+            padding: 5px;
+        }
+
+        .add-event button {
+            padding: 5px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .stocks {
+            margin-top: 20px;
+        }
+
+        .stocks iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Daily Tasks and Calendar</h1>
+
+        <!-- Tasks Section -->
+        <div class="tasks">
+            <h2>Daily Tasks</h2>
+            <div class="task-input">
+                <input type="text" id="taskInput" placeholder="Add a new task...">
+                <button onclick="addTask()">Add Task</button>
+            </div>
+            <ul class="task-list" id="taskList"></ul>
+        </div>
+
+        <!-- Calendar Section -->
+        <div class="calendar">
+            <h2>Calendar</h2>
+            <table id="calendar">
+                <!-- Calendar will be dynamically generated -->
+            </table>
+            <div class="add-event" id="addEvent">
+                <input type="text" id="eventInput" placeholder="Add event for selected date">
+                <button onclick="addEvent()">Add Event</button>
+            </div>
+        </div>
+
+        <!-- Stock Market Section -->
+        <div class="stocks">
+            <h2>Stock Market Charts</h2>
+            <iframe src="https://widget.tradingview.com/widgetembed/?frameElementId=tradingview_45678&amp;symbol=NASDAQ:AAPL&amp;interval=D&amp;hidesidetoolbar=1&amp;symboledit=1&amp;saveimage=1&amp;toolbarbg=f1f3f6&amp;studies=[]&amp;theme=light&amp;style=1&amp;timezone=Etc/UTC&amp;studies_overrides={}&amp;overrides={}&amp;enabled_features=[]&amp;disabled_features=[]&amp;locale=en"></iframe>
+        </div>
+    </div>
+
+    <script>
+        // Tasks Section
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const taskList = document.getElementById('taskList');
+            const taskText = taskInput.value.trim();
+
+            if (taskText === '') return;
+
+            const li = document.createElement('li');
+            li.innerHTML = `${taskText} <button onclick="deleteTask(this)">Delete</button>`;
+            taskList.appendChild(li);
+            taskInput.value = '';
+        }
+
+        function deleteTask(button) {
+            button.parentElement.remove();
+        }
+
+        // Calendar Section
+        function generateCalendar() {
+            const calendar = document.getElementById('calendar');
+            const today = new Date();
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+            let html = `<tr><th colspan="7">${months[currentMonth]} ${currentYear}</th></tr>`;
+            html += `<tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>`;
+
+            let date = 1;
+            for (let i = 0; i < 6; i++) {
+                let row = "<tr>";
+                for (let j = 0; j < 7; j++) {
+                    if (i === 0 && j < firstDay) {
+                        row += "<td></td>";
+                    } else if (date > daysInMonth) {
+                        break;
+                    } else {
+                        row += `<td onclick="selectDate(${date})">${date}</td>`;
+                        date++;
+                    }
+                }
+                row += "</tr>";
+                html += row;
+            }
+
+            calendar.innerHTML = html;
+        }
+
+        function selectDate(date) {
+            const addEventDiv = document.getElementById('addEvent');
+            const eventInput = document.getElementById('eventInput');
+
+            addEventDiv.style.display = 'block';
+            eventInput.setAttribute('data-date', date);
+        }
+
+        function addEvent() {
+            const eventInput = document.getElementById('eventInput');
+            const date = eventInput.getAttribute('data-date');
+            const eventText = eventInput.value.trim();
+
+            if (eventText === '') return;
+
+            alert(`Event added for date ${date}: ${eventText}`);
+            eventInput.value = '';
+        }
+
+        // Initialize Calendar
+        generateCalendar();
+    </script>
+</body>
+</html>
+
