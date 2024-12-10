@@ -116,6 +116,16 @@
             border: none;
             cursor: pointer;
         }
+
+        .stocks {
+            margin-top: 20px;
+        }
+
+        .stocks iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -142,6 +152,12 @@
                 <input type="text" id="eventInput" placeholder="Add event for selected date">
                 <button onclick="addEvent()">Add Event</button>
             </div>
+        </div>
+
+        <!-- Stock Market Section -->
+        <div class="stocks">
+            <h2>Stock Market Charts</h2>
+            <iframe src="https://widget.tradingview.com/widgetembed/?frameElementId=tradingview_45678&amp;symbol=NASDAQ:AAPL&amp;interval=D&amp;hidesidetoolbar=1&amp;symboledit=1&amp;saveimage=1&amp;toolbarbg=f1f3f6&amp;studies=[]&amp;theme=light&amp;style=1&amp;timezone=Etc/UTC&amp;studies_overrides={}&amp;overrides={}&amp;enabled_features=[]&amp;disabled_features=[]&amp;locale=en"></iframe>
         </div>
     </div>
 
@@ -223,3 +239,4 @@
     </script>
 </body>
 </html>
+
